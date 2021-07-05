@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import styled from 'styled-components/native';
 
 
@@ -12,16 +12,58 @@ const FeedView = styled.View`
     margin-top: 10px;
 `
 
-const Card = styled.TouchableOpacity`
-    display: flex;
-    align-items: center;
-    border-bottom-width: 1px;
-    border-bottom-color: #000000
-    margin-horizontal: 20px;
-    margin-vertical: 10px;
-
+const FlatView = styled.View`
+    margin-top: 70px;
 `
 
+const Card = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+    padding: 0px;
+    width:104px;
+    height: 112px;
+    left:0px;
+    top: 0px;
+
+    border: 1px solid #74cb48;
+    border-radius: 8px;
+    
+`
+
+const CardLayout = styled.View`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top:2px;
+    margin-bottom: 4px
+`
+
+const ViewNumber = styled.View`
+    align-items: center;
+    justify-content: center;
+    height: 12px;
+    width:88px;
+`
+const ViewImage = styled.View`
+    align-items: center;
+    justify-content: center;
+    height: auto;
+`
+const ViewName = styled.View`
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width:104px;
+`
+const Separator = styled.View`
+    height: 0px;
+    width: 100%;
+    
+    background-color: #ced0ce
+`
 const ViewSearch = styled.View`
     position: absolute;
     margin-bottom: 70px;
@@ -40,68 +82,111 @@ const StyledSearch = styled.TextInput`
 `
 
 const StyledImage = styled.Image`
-    width: 150px;
-    height: 150px;
+    width: 72px;
+    height: 72px;
 `
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 
 const Feed = (props) => {
 
     const [pokemons, setPokemons] = useState([]);
+    const [fullData, setFullData] = useState([]);
     const [search, setSearch] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
-        fetchResults();
+        fetchResults()
     }, []);
 
     const fetchResults = () => {
         fetch('https://pokeapi.co/api/v2/pokemon?limit=500')
         .then(response => response.json())
-        .then(pokemons => setPokemons(pokemons.results))
+        .then(pokemons => {setPokemons(pokemons.results); setFullData(pokemons.results)})
+
     }
+
+    const handleSearch = search => {
+        const filteredData = fullData.filter(pokemon => 
+            pokemon.name.toLowerCase().includes(search.toLowerCase()))
+
+        setPokemons(filteredData)
+
+    }
+      
+    const onRefresh = () => {
+        setRefreshing(true);
+        wait(3000).then(() => setRefreshing(false));     
+    };
+
 
     return (
         <FeedView>
             <ViewSearch>
                 <StyledSearch
                     placeholder = "Procurar" 
-                    onChangeText={value => setSearch(value)}
+                    onChangeText={value => {setSearch(value); handleSearch(value)}}
                     value={search}
                 />
             </ViewSearch>
 
-            <ScrollView>
+ 
 
-                <View>
-                    {pokemons
-                    .filter(pokemon => 
-                        pokemon.name.toLowerCase().includes(search.toLowerCase()))
-                        .map((pokemon,index) => {
-                            return (
+                <FlatView>
+               
+
+                    <FlatList
+                        data={pokemons}
+                        numColumns={3}
+                        ItemSeparatorComponent={() => <Separator />}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        renderItem={({ item, index }) => (
+
+                            
                                 <Card
                                     activeOpacity={0.5}
                                     key={index}
                                     onPress={() => 
-                                        props.navigation.navigate('Details', { pokemon: pokemon.name })
+                                        props.navigation.navigate('Details', { pokemon: item.name })
                                     }
                                 >
-                                    <StyledImage 
-                                        source={{
-                                            uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${
-                                                    pokemon.name
-                                            }.png`,
-                                        }}
-                                    />
+                                    <CardLayout>
 
-                                    <Text>{pokemon.name}</Text>
+                                        <ViewNumber>
+                                            <Text>#{index+1}</Text>
+                                        </ViewNumber>
+                                        <ViewImage>
+                                            <StyledImage 
+                                                source={{
+                                                    uri: `https://img.pokemondb.net/sprites/omega-ruby-alpha-sapphire/dex/normal/${
+                                                            item.name
+                                                    }.png`,
+                                                }}
+                                            />
+                                        </ViewImage>
+                                        <ViewName>
+                                            <Text>{item.name}</Text>
+                                        </ViewName>
 
+                                    </CardLayout>
                                 </Card>
-                            )
-                        })
-                    }
-                </View>
+                            )} 
 
-            </ScrollView>
+
+
+
+
+                    keyExtractor={ item  => item.name }
+
+
+                    />
+                   
+                </FlatView>
+
+ 
 
         </FeedView>
         )
