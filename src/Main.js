@@ -7,10 +7,12 @@ import styled from 'styled-components/native';
 
 import Feed from './screens/feed';
 import Details from './screens/details'
+import First from './screens/firstgen'
 
 const FeedStack = createStackNavigator({
   Feed: Feed,
-  Details: Details
+  Details: Details,
+  First: First
 },{
   initialRouteName: 'Feed'
 });

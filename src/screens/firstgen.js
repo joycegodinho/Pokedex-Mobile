@@ -2,18 +2,18 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
 import styled from 'styled-components/native';
 
-
-
 const FeedView = styled.View`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 10px;
+    
 `
 
 const FlatView = styled.View`
-    margin-top: 60px;
+    margin-top: 0px;
+    padding-bottom: 0px;
 `
 
 const Card = styled.TouchableOpacity`
@@ -78,60 +78,19 @@ const Separator = styled.View`
     width: 100%;
     
 `
-const ViewSearch = styled.View`
-    position: absolute;
-    z-index: 1;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: center;
-`
-
-const StyledSearch = styled.TextInput`
-    border-width: 1px;
-    border-color: #E0E0E0;
-    text-align: center;
-    width: 328px;
-    height: 30px;
-    background: #FFFFFF;
-    border-radius: 8px;
-`
 
 const StyledImage = styled.Image`
     width: 82px;
     height: 82px;
 `
-
-const FirstButtom = styled.TouchableOpacity`
-    justify-content: center;
-    align-items: center;
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    bottom: 80px;
-    right: 25px;
-    background-color: #62ECFF  ;
-    border-radius: 100px;
-    color: #000000;
-    border: 1px solid #B8B8B9;
-    elevation: 10;
-`
-
-const ButtonText = styled.Text`
-    font-weight: bold;
-    color: #FFFFFF
-    font-size: 25px
-`
-
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
 
-const Feed = (props) => {
+const FisrtGen = (props) => {
 
     const [pokemons, setPokemons] = useState([]);
-    const [fullData, setFullData] = useState([]);
-    const [search, setSearch] = useState('');
     const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
@@ -139,20 +98,12 @@ const Feed = (props) => {
     }, []);
 
     const fetchResults = () => {
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=500')
+        fetch('https://pokeapi.co/api/v2/generation/1/')
         .then(response => response.json())
-        .then(pokemons => {setPokemons(pokemons.results); setFullData(pokemons.results)})
+        .then(pokemons => {setPokemons(pokemons.pokemon_species)})
 
     }
-
-    const handleSearch = search => {
-        const filteredData = fullData.filter(pokemon => 
-            pokemon.name.toLowerCase().includes(search.toLowerCase()))
-
-        setPokemons(filteredData)
-
-    }
-      
+     
     const onRefresh = () => {
         setRefreshing(true);
         wait(3000).then(() => setRefreshing(false));     
@@ -161,15 +112,6 @@ const Feed = (props) => {
 
     return (
         <FeedView>
-            <ViewSearch>
-                <StyledSearch
-                    placeholder = "Procurar" 
-                    onChangeText={value => {setSearch(value); handleSearch(value)}}
-                    value={search}
-                />
-            </ViewSearch>
-
- 
 
                 <FlatView>
                
@@ -212,6 +154,10 @@ const Feed = (props) => {
                                 </Card>
                             )} 
 
+
+
+
+
                     keyExtractor={ item  => item.name }
 
 
@@ -219,20 +165,10 @@ const Feed = (props) => {
                    
                 </FlatView>
 
-                <FirstButtom 
-                    onPress={() => 
-                        props.navigation.navigate('First')
-                    }
-                ><ButtonText>
-                    1G
-                </ButtonText>
-                    
-                </FirstButtom>
-
  
 
         </FeedView>
         )
 }
 
-export default Feed;
+export default FisrtGen;
