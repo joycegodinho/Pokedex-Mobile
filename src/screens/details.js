@@ -181,7 +181,8 @@ const StyledTypeText = styled.Text`
     font-weight: bold;
     font-size: 10px;
     line-height: 16px;
-    color: #FFFFFF
+    color: #FFFFFF;
+    text-transform:capitalize;
 `
 
 const ViewCard = styled.View`
@@ -409,9 +410,8 @@ const Details = props => {
                                 <StyledText>{details.abilities[0].ability.name}</StyledText>
                                 <StyledTextLight>Habilidades</StyledTextLight>
                             </ViewAbility>
-
                             )}                    
-            
+
                 </ViewAbout>
 
                 <StyledTextBold style={{color: getColor()}}>Status Base</StyledTextBold>
@@ -462,11 +462,9 @@ const Details = props => {
         </ViewDetails>
 
     ):(
-
         <StyledIndicator>
             <ActivityIndicator size="large" color="#E63F34" />
         </StyledIndicator>
-
     )
 }
 
