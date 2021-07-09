@@ -78,10 +78,17 @@ const ViewAbility = styled.View`
 const ViewDetails = styled.View`
     flex: 1;
     align-items: center;
+    justify-content: flex-end
 `
 const StyledImage = styled.Image`
-    width: 200px;
-    height: 200px;
+    width: 270px;
+    height: 270px;
+    z-index: 2;
+    top: 10%;
+    bottom: 0%;
+    position: absolute
+    align-items: center;
+    
 `
 const StyledText = styled.Text`
     font-style: normal;
@@ -178,20 +185,22 @@ const StyledTypeText = styled.Text`
 `
 
 const ViewCard = styled.View`
-
     justify-content: center;
     align-items: center;
-    width: 352px;
-    height: 412px;
-
+    width: 97%;
+    height: 70%;
     background: #FFFFFF;
     border-radius: 8px;
-
-
-
+    margin-bottom: 1.5%;
 `
 
-
+const StyledPokeball = styled.Image`
+    position: absolute;
+    width: 208px;
+    height: 208px;
+    left: 190px;
+    top: 6px; 
+`
 
 const Details = props => {
 
@@ -208,9 +217,7 @@ const Details = props => {
           .then(details => setDetails(details));
       }
 
-      console.log(details)
-
-      const getColor = () => {
+    const getColor = () => {
 
             if(details.types[0].type.name == 'normal'){
                 return '#AAA67F'
@@ -347,6 +354,7 @@ const Details = props => {
                     }.png`,
                 }}
             />
+            <StyledPokeball source={require('../img/Pokeball.png')} />
 
             <ViewCard>
 
@@ -374,23 +382,18 @@ const Details = props => {
 
                 <ViewAbout>
                     <ViewWeight>
-
                         <ViewWeightDetails>
                             <ImgWeight source={require('../img/Vectorweight.png')}/>
                             <StyledText> {details.weight/10} Kg</StyledText>
 
                         </ViewWeightDetails>
-                        
-                        
                         <StyledTextLight>Peso</StyledTextLight>
-
                     </ViewWeight>
 
                     <ViewHeight>
                         <ViewHeightDetails>
                             <ImgHeight source={require('../img/Vectorheight.png')}/>
                             <StyledText> {details.height/10} m</StyledText>
-
                         </ViewHeightDetails>
                         <StyledTextLight>Altura</StyledTextLight>
                     </ViewHeight>
@@ -410,7 +413,6 @@ const Details = props => {
                             )}                    
             
                 </ViewAbout>
-
 
                 <StyledTextBold style={{color: getColor()}}>Status Base</StyledTextBold>
 
@@ -453,17 +455,9 @@ const Details = props => {
                             <StyledText><StyledFill style={{width:details.stats[5].base_stat, backgroundColor: getColor()}}></StyledFill><StyledUnFill style={{width: 248 - details.stats[5].base_stat}}></StyledUnFill></StyledText>
                         </StyledStats>
                     </StyledStatsGraph>
-
-
-
                 </ViewStats>
 
-
-
             </ViewCard>
-
-
-
 
         </ViewDetails>
 
